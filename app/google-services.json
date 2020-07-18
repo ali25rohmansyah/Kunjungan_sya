@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "235352398253",
+    "firebase_url": "https://kunjungan-3506f.firebaseio.com",
+    "project_id": "kunjungan-3506f",
+    "storage_bucket": "kunjungan-3506f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:235352398253:android:65392880e33ca83da76924",
+        "android_client_info": {
+          "package_name": "com.raproject.kunjungan"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "235352398253-l8ubu1urulcbasonlnj32g10er42v47l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.raproject.kunjungan",
+            "certificate_hash": "fbd97047f47b4ac04968544f1e8fc40515bb7698"
+          }
+        },
+        {
+          "client_id": "235352398253-js9354eh45dbv4f4jki8546teeus92gs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNCrCHu4GPRC8G4BpflDMyYcIiJOoJ0bc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "235352398253-js9354eh45dbv4f4jki8546teeus92gs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

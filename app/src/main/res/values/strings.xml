@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Kunjungan Saya</string>
+    <string-array name="bank">
+        <item>bni</item>
+        <item>mandiri</item>
+        <item>bri</item>
+    </string-array>
+</resources>
