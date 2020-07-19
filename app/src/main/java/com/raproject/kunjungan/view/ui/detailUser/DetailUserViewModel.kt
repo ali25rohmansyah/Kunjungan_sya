@@ -18,7 +18,7 @@ class DetailUserViewModel (id: String, application: Application): AndroidViewMod
 
     private var _response = MutableLiveData<String>()
     private var _items = MutableLiveData<DetailUserData>()
-    private val id = id
+    private val id2 = id
 
     val response: LiveData<String>
         get() =_response
@@ -26,17 +26,21 @@ class DetailUserViewModel (id: String, application: Application): AndroidViewMod
         get() = _items
 
     private val vmJob = Job()
+    private val vmJob2 = Job()
+    private val vmJob3 = Job()
     private val crScope = CoroutineScope(vmJob + Dispatchers.Main)
+    private val crScope2 = CoroutineScope(vmJob2 + Dispatchers.Main)
+    private val crScope3 = CoroutineScope(vmJob3 + Dispatchers.Main)
 
     init {
         showDetailUser()
     }
 
-    fun showDetailUser(){
+    private fun showDetailUser(){
         _response.postValue("1")
         crScope.launch {
             try {
-                val result = kunjunganService.kunjunganApi.retrofitService.detailUser(id)
+                val result = kunjunganService.kunjunganApi.retrofitService.detailUser(id2)
 
                 _items.value = result
                 _response.postValue("2")
@@ -48,12 +52,12 @@ class DetailUserViewModel (id: String, application: Application): AndroidViewMod
     }
 
     fun updateUser(nik: String, foto: String, nama: String, tanggal_lahir: String,alamat: String, no_hp: String, status_no_hp: String, status_kepegawaian: String, gaji: Int, pembayaran_gaji: String, sales_respon: String){
-        vmJob.cancel()
+
         _response.postValue("3")
-        crScope.launch {
+        crScope2.launch {
             try {
                 kunjunganService.kunjunganApi.retrofitService.updateUser(
-                    id,
+                    id2,
                     nik,
                     foto,
                     nama,
@@ -67,18 +71,30 @@ class DetailUserViewModel (id: String, application: Application): AndroidViewMod
                     sales_respon)
 
                 _response.postValue("4")
-
             }catch (t: Throwable){
                 Log.d("debug", t.message.toString())
             }
         }
     }
 
-//    override fun onCleared() {
-//        super.onCleared()
-//        vmJob.cancel()
-//    }
+    fun deleteUser(){
+        _response.postValue("5")
+        crScope3.launch {
+            kunjunganService.kunjunganApi.retrofitService.deleteUser(id2)
 
+            _response.postValue("6")
+
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        vmJob.cancel()
+        when(_response.value){
+            "4" -> vmJob2.cancel()
+            "6" -> vmJob3.cancel()
+        }
+    }
 
 
 }

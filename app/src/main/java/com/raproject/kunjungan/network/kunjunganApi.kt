@@ -1,11 +1,8 @@
 package com.raproject.kunjungan.network
 
-import com.google.gson.Gson
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import retrofit2.Call
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.*
 
@@ -16,7 +13,7 @@ val moshi: Moshi = Moshi.Builder()
     .build()
 
 private val retrofit = Retrofit.Builder()
-    .addConverterFactory(GsonConverterFactory.create())
+    .addConverterFactory(MoshiConverterFactory.create(moshi))
     .baseUrl(baseUrl)
     .build()
 
@@ -47,7 +44,7 @@ interface kunjunganService{
     ): DetailUserData
 
     @FormUrlEncoded
-    @PUT("/user/{id}")
+    @POST("/user/update/{id}")
     suspend fun updateUser(
         @Path("id")id: String,
         @Field("nik")nik: String,
@@ -63,9 +60,13 @@ interface kunjunganService{
         @Field("sales_respon")sales_respon: String
     ): DetailUserData
 
-    @DELETE("/user/{id}")
-    suspend fun deleteUser():
+    @GET("/user/delete/{id}")
+    suspend fun deleteUser(@Path("id")id: String):
             DetailUserData
+    
+    @GET("user/find/{id}")
+    suspend fun findUser(@Path("id")id: String):
+            List<UserData>
 
 object kunjunganApi{
     val retrofitService: kunjunganService = retrofit.create(kunjunganService::class.java)

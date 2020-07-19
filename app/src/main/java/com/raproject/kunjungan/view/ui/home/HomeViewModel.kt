@@ -1,5 +1,6 @@
 package com.raproject.kunjungan.view.ui.home
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -20,9 +21,15 @@ class HomeViewModel: ViewModel() {
         get() = _items
 
     private val vmJob = Job()
+    private val vmJob2 = Job()
     private val crScope = CoroutineScope(vmJob + Dispatchers.Main)
+    private val crScope2 = CoroutineScope(vmJob2 + Dispatchers.Main)
 
     init {
+        listUser()
+    }
+
+    fun listUser(){
         _response.postValue("1")
         crScope.launch {
             try {
@@ -30,9 +37,30 @@ class HomeViewModel: ViewModel() {
                 if (result.isNotEmpty()) {
                     _items.value = result
                     _response.postValue("2")
+                }else{
+                    _response.postValue("3")
                 }
             }catch (t: Throwable){
-                _response.postValue(t.message.toString())
+                Log.e("error12", t.message.toString())
+                _response.postValue("4")
+            }
+        }
+    }
+
+    fun searchUser(query: String){
+        _response.postValue("1")
+        crScope2.launch {
+            try {
+                val result = kunjunganService.kunjunganApi.retrofitService.findUser(query)
+                if (result.isNotEmpty()) {
+                    _items.value = result
+                    _response.postValue("2")
+                }else{
+                    _response.postValue("3")
+                }
+            }catch (t: Throwable){
+                Log.e("error12", t.message.toString())
+                _response.postValue("4")
             }
         }
     }
@@ -40,5 +68,6 @@ class HomeViewModel: ViewModel() {
     override fun onCleared() {
         super.onCleared()
         vmJob.cancel()
+        vmJob2.cancel()
     }
 }

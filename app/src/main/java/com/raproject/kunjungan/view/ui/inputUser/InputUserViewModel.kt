@@ -1,13 +1,6 @@
 package com.raproject.kunjungan.view.ui.inputUser
 
-import android.Manifest
-import android.content.pm.PackageManager
-import android.os.CountDownTimer
-import android.telecom.Call
 import android.util.Log
-import android.widget.Toast
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,7 +9,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import javax.security.auth.callback.Callback
 
 
 class InputUserViewModel: ViewModel(){
@@ -47,7 +39,8 @@ class InputUserViewModel: ViewModel(){
                 )
                 _response.postValue("2")
             } catch (t: Throwable) {
-                Log.e("error", t.message.toString())
+                _response.postValue(("3"))
+                Log.e("errorb", t.message.toString())
             }
         }
     }

@@ -2,9 +2,13 @@ package com.raproject.kunjungan.view.ui.inputUser
 
 import android.Manifest
 import android.app.Activity
+import android.app.DatePickerDialog
+import android.app.DatePickerDialog.OnDateSetListener
+import android.app.TimePickerDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -31,6 +35,8 @@ import com.raproject.kunjungan.R
 import com.raproject.kunjungan.databinding.ActivityInputUserBinding
 import com.raproject.kunjungan.view.ui.home.HomeActivity
 import kotlinx.android.synthetic.main.activity_home.*
+import kotlinx.android.synthetic.main.activity_home.progress_circular
+import kotlinx.android.synthetic.main.activity_input_user.*
 import java.io.File
 import java.io.IOException
 import java.util.*
@@ -52,6 +58,11 @@ class InputUserActivity : AppCompatActivity() {
     lateinit var storage: FirebaseStorage
     lateinit var storageReference: StorageReference
 
+    var jam = 0
+    var menit:Int = 0
+
+    var timePickerDialog: TimePickerDialog? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_input_user)
@@ -59,46 +70,63 @@ class InputUserActivity : AppCompatActivity() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
 
+        binding.edtTanggalLahir.setOnClickListener{showTimeDialog()}
+
+        //save data
         binding.btnSave.setOnClickListener {
-            if (photoPath != null){
-
-                val ref = storageReference.child("images/" + UUID.randomUUID().toString())
-                ref.putFile(filePath)
-                    .addOnSuccessListener {
-                        ref.downloadUrl.addOnSuccessListener {
-                            imageUrl = it.toString()
+            if(binding.edtNik.text.isNotEmpty()) {
+                if (photoPath != null) {
+                    val ref = storageReference.child("images/" + UUID.randomUUID().toString())
+                    ref.putFile(filePath)
+                        .addOnSuccessListener {
+                            ref.downloadUrl.addOnSuccessListener {
+                                imageUrl = it.toString()
+                            }
                         }
-                    }
-                    .addOnFailureListener {
-                        Toast.makeText(this, "upload foto gagal", Toast.LENGTH_SHORT).show()
-                    }
-                    .addOnProgressListener {
-
-                    }
-            }
-            viewModel.insertData(
-                binding.edtNik.text.toString(),
-                imageUrl,
-                binding.edtNama.text.toString(),
-                binding.edtTanggalLahir.text.toString(),
-                binding.edtAlamat.text.toString(),
-                "+62"+binding.edtNoHp.text.toString(),
-                "1",
-                "aktif",
-                binding.edtGaji.text.toString().toInt(),
-                binding.spBank.selectedItem.toString(),
-                binding.edtSalesRespon.text.toString()
-            )
-
-            viewModel.response.observe(this, Observer {
-                if(it == "1"){
-                    progress_circular.visibility = View.VISIBLE
-                }else if (it == "2"){
-                    progress_circular.visibility = View.GONE
-                    finish()
-                    startActivity(Intent(this, HomeActivity::class.java))
+                        .addOnFailureListener {
+                            Toast.makeText(this, "upload foto gagal", Toast.LENGTH_SHORT).show()
+                        }
+                        .addOnProgressListener {
+                        }
+                }else{
+                    imageUrl = "https://firebasestorage.googleapis.com/v0/b/kunjungan-3506f.appspot.com/o/images%2Fboy.png?alt=media&token=44eab7f7-6770-4885-9165-a61682482652"
                 }
-            })
+
+
+                //getData from input user
+                val nik = binding.edtNik.text.toString()
+                val foto = imageUrl
+                val nama = binding.edtNama.text.toString()
+                val tanggal_lahir = binding.edtTanggalLahir.text.toString()
+                val alamat = binding.edtAlamat.text.toString()
+                val no_hp = binding.edtNoHp.text.toString()
+                val status_no_hp = "1"
+                var gaji = 0
+                if (binding.edtGaji.text.isNotEmpty()){
+                    gaji = binding.edtGaji.text.toString().toInt()
+                }
+                val bank = binding.spBank.selectedItem.toString()
+                val sales_respon = binding.edtSalesRespon.text.toString()
+                var statusKepegawaian = ""
+                if (binding.rdButton1.isChecked) {
+                    statusKepegawaian = "aktif"
+                }else if(binding.rdButton1.isChecked){
+                    statusKepegawaian = "pensiun"
+                }
+
+                viewModel.insertData(nik, foto, nama, tanggal_lahir, alamat, no_hp, status_no_hp, statusKepegawaian, gaji, bank, sales_respon)
+                viewModel.response.observe(this, Observer {
+                    if (it == "1") {
+                        progress_circular.visibility = View.VISIBLE
+                    } else if (it == "2") {
+                        progress_circular.visibility = View.GONE
+                        finish()
+                        startActivity(Intent(this, HomeActivity::class.java))
+                    }
+                })
+            }else{
+                Toast.makeText(this, "NIK harus diisi", Toast.LENGTH_SHORT).show()
+            }
         }
 
         viewModel.response.observe(this, Observer {
@@ -107,12 +135,14 @@ class InputUserActivity : AppCompatActivity() {
             }
         })
 
+        //OTP
         mAuth = FirebaseAuth.getInstance()
         binding.btnOtp.setOnClickListener{
             requestOtp("+62"+binding.edtNoHp.text.toString())
             binding.btnValidasiOtp.visibility = View.VISIBLE
         }
 
+        //OTP verification
         binding.btnValidasiOtp.setOnClickListener{
             val credential = PhoneAuthProvider.getCredential(mVerificationId, binding.edtOtp.text.toString())
             signInWithPhoneAuthCredential(credential)
@@ -144,16 +174,14 @@ class InputUserActivity : AppCompatActivity() {
                         photoFile
                     )
 
-                    filePath = photoURI
-
-                    val intentCamera = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                    startActivityForResult(intentCamera, REQUEST_TAKE_PHOTO)
-
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                    startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO)
                 }
             }
         }
     }
 
+    //Check permissions
     private fun checkAndRequestPermissions(): Boolean{
         val listPermissionsNeeded = ArrayList<String>()
         val writeExternalCamera = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -203,10 +231,31 @@ class InputUserActivity : AppCompatActivity() {
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
             if (photoPath != null) {
 
-                val photo = data!!.extras!!["data"] as Bitmap?
+                filePath = Uri.fromFile(File(photoPath!!))
+                val photo: Bitmap = BitmapFactory.decodeFile(photoPath)
                 binding.ivProfile.setImageBitmap(photo)
+
             }
         }
+    }
+
+    private fun showTimeDialog() {
+
+        val c = Calendar.getInstance();
+        var mYear = c.get(Calendar.YEAR);
+        var mMonth = c.get(Calendar.MONTH);
+        var mDay = c.get(Calendar.DAY_OF_MONTH);
+
+        val datePickerDialog = DatePickerDialog(
+            this,
+            OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
+                binding.edtTanggalLahir.setText("$dayOfMonth-$monthOfYear-$year")
+            },
+            mYear,
+            mMonth,
+            mDay
+        )
+        datePickerDialog.show()
     }
 
     private val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
@@ -278,6 +327,11 @@ class InputUserActivity : AppCompatActivity() {
             phone!!, 120, TimeUnit.SECONDS, this, callbacks, mResendToken
         )
         Toast.makeText(this, "Kode dikirim ulang", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        startActivity(Intent(this, HomeActivity::class.java))
     }
 
     companion object {

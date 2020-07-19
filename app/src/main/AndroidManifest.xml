@@ -18,7 +18,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".view.ui.detailUser.DetailUserActivity"></activity>
+        <activity android:name=".view.ui.detailUser.DetailUserActivity"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -28,11 +28,18 @@
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
         </provider>
 
         <activity android:name=".view.ui.inputUser.InputUserActivity" />
-        <activity android:name=".view.ui.home.HomeActivity" />
-        <activity android:name=".SplashScreen">
+        <activity android:name=".view.ui.home.HomeActivity" >
+            <meta-data android:name="android.app.default_searchable"
+                android:value=".app.Search" />
+        </activity>
+        <activity android:name=".SplashScreen"
+            android:theme="@style/noActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
