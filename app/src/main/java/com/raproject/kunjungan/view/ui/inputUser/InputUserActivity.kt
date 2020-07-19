@@ -4,7 +4,6 @@ import android.Manifest
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
-import android.app.TimePickerDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -35,8 +34,6 @@ import com.raproject.kunjungan.R
 import com.raproject.kunjungan.databinding.ActivityInputUserBinding
 import com.raproject.kunjungan.view.ui.home.HomeActivity
 import kotlinx.android.synthetic.main.activity_home.*
-import kotlinx.android.synthetic.main.activity_home.progress_circular
-import kotlinx.android.synthetic.main.activity_input_user.*
 import java.io.File
 import java.io.IOException
 import java.util.*
@@ -52,16 +49,11 @@ class InputUserActivity : AppCompatActivity() {
     private lateinit var mVerificationId: String
     private var photoPath: String? = null
     lateinit var filePath: Uri
-    private var imageUrl: String = ""
+    private var imageUrl: String = "https://firebasestorage.googleapis.com/v0/b/kunjungan-3506f.appspot.com/o/images%2Fboy.png?alt=media&token=44eab7f7-6770-4885-9165-a61682482652"
 
     //firebase storage
     lateinit var storage: FirebaseStorage
     lateinit var storageReference: StorageReference
-
-    var jam = 0
-    var menit:Int = 0
-
-    var timePickerDialog: TimePickerDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,23 +67,6 @@ class InputUserActivity : AppCompatActivity() {
         //save data
         binding.btnSave.setOnClickListener {
             if(binding.edtNik.text.isNotEmpty()) {
-                if (photoPath != null) {
-                    val ref = storageReference.child("images/" + UUID.randomUUID().toString())
-                    ref.putFile(filePath)
-                        .addOnSuccessListener {
-                            ref.downloadUrl.addOnSuccessListener {
-                                imageUrl = it.toString()
-                            }
-                        }
-                        .addOnFailureListener {
-                            Toast.makeText(this, "upload foto gagal", Toast.LENGTH_SHORT).show()
-                        }
-                        .addOnProgressListener {
-                        }
-                }else{
-                    imageUrl = "https://firebasestorage.googleapis.com/v0/b/kunjungan-3506f.appspot.com/o/images%2Fboy.png?alt=media&token=44eab7f7-6770-4885-9165-a61682482652"
-                }
-
 
                 //getData from input user
                 val nik = binding.edtNik.text.toString()
@@ -99,7 +74,7 @@ class InputUserActivity : AppCompatActivity() {
                 val nama = binding.edtNama.text.toString()
                 val tanggal_lahir = binding.edtTanggalLahir.text.toString()
                 val alamat = binding.edtAlamat.text.toString()
-                val no_hp = binding.edtNoHp.text.toString()
+                val no_hp = "+62"+binding.edtNoHp.text.toString()
                 val status_no_hp = "1"
                 var gaji = 0
                 if (binding.edtGaji.text.isNotEmpty()){
@@ -150,7 +125,7 @@ class InputUserActivity : AppCompatActivity() {
         }
 
         storage = FirebaseStorage.getInstance();
-        storageReference = storage.getReference();
+        storageReference = storage.reference;
         binding.ivAdd.setOnClickListener{
             if (checkAndRequestPermissions()){
                 val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -235,6 +210,22 @@ class InputUserActivity : AppCompatActivity() {
                 val photo: Bitmap = BitmapFactory.decodeFile(photoPath)
                 binding.ivProfile.setImageBitmap(photo)
 
+                val ref = storageReference.child("images/" + UUID.randomUUID().toString())
+                ref.putFile(filePath)
+                    .addOnSuccessListener {
+                        ref.downloadUrl.addOnSuccessListener {
+                            imageUrl = it.toString()
+                            Log.d("debug", "foto$imageUrl")
+                            Log.d("debug", it.toString())
+                        }
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(this, "upload foto gagal", Toast.LENGTH_SHORT).show()
+                    }
+                    .addOnProgressListener {
+                    }
+            }else{
+                imageUrl = "https://firebasestorage.googleapis.com/v0/b/kunjungan-3506f.appspot.com/o/images%2Fboy.png?alt=media&token=44eab7f7-6770-4885-9165-a61682482652"
             }
         }
     }
@@ -242,9 +233,9 @@ class InputUserActivity : AppCompatActivity() {
     private fun showTimeDialog() {
 
         val c = Calendar.getInstance();
-        var mYear = c.get(Calendar.YEAR);
-        var mMonth = c.get(Calendar.MONTH);
-        var mDay = c.get(Calendar.DAY_OF_MONTH);
+        val mYear = c.get(Calendar.YEAR);
+        val mMonth = c.get(Calendar.MONTH);
+        val mDay = c.get(Calendar.DAY_OF_MONTH);
 
         val datePickerDialog = DatePickerDialog(
             this,
@@ -269,10 +260,10 @@ class InputUserActivity : AppCompatActivity() {
             Log.d("otp", "onVerificationFailed: $e")
 
             if (e is FirebaseAuthInvalidCredentialsException) {
-                Log.d("debug",e.toString());
+                Log.d("debug",e.toString())
 
             } else if (e is FirebaseTooManyRequestsException) {
-                Log.d("otp", e.toString());
+                Log.d("otp", e.toString())
 
             }
         }

@@ -2,9 +2,12 @@ package com.raproject.kunjungan.network
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import okhttp3.ResponseBody
+import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.*
+
 
 private const val baseUrl = "https://raasjack.000webhostapp.com/"
 
@@ -62,7 +65,8 @@ interface kunjunganService{
 
     @GET("/user/delete/{id}")
     suspend fun deleteUser(@Path("id")id: String):
-            DetailUserData
+            ResponseBody
+//    fun deleteBook(@Path("id") bookId: Int): Call<ResponseBody?>?
     
     @GET("user/find/{id}")
     suspend fun findUser(@Path("id")id: String):

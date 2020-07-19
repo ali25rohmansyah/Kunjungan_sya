@@ -30,7 +30,7 @@ class DetailUserViewModel (id: String, application: Application): AndroidViewMod
     private val vmJob3 = Job()
     private val crScope = CoroutineScope(vmJob + Dispatchers.Main)
     private val crScope2 = CoroutineScope(vmJob2 + Dispatchers.Main)
-    private val crScope3 = CoroutineScope(vmJob3 + Dispatchers.Main)
+    private val crScope3 = CoroutineScope(vmJob3 + Dispatchers.IO)
 
     init {
         showDetailUser()
@@ -81,9 +81,7 @@ class DetailUserViewModel (id: String, application: Application): AndroidViewMod
         _response.postValue("5")
         crScope3.launch {
             kunjunganService.kunjunganApi.retrofitService.deleteUser(id2)
-
             _response.postValue("6")
-
         }
     }
 

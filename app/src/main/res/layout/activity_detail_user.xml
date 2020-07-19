@@ -17,7 +17,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".view.ui.detailUser.DetailUserActivity">
+            tools:context=".view.ui.inputUser.InputUserActivity">
 
             <ProgressBar
                 android:id="@+id/progress_circular"
@@ -35,7 +35,7 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_marginTop="30dp"
-                app:showImage="@{viewModel.items.foto}"
+                showImage="@{viewModel.items.foto}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -65,6 +65,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
+                android:lines="1"
+                android:maxLines="1"
+                android:maxLength="16"
+                android:inputType="number"
                 android:text="@{viewModel.items.nik}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -87,6 +91,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
+                android:lines="1"
+                android:maxLines="1"
+                android:inputType="text"
                 android:text="@{viewModel.items.nama}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -109,10 +116,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
+                android:inputType="text"
+                android:lines="1"
+                android:maxLines="1"
+                android:clickable="true"
                 android:text="@{viewModel.items.tanggal_lahir}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView4" />
+                app:layout_constraintTop_toBottomOf="@+id/textView4"
+                android:focusable="false" />
 
             <TextView
                 android:id="@+id/textView5"
@@ -152,10 +164,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:editable="false"
                 android:text="+62"
                 android:textColor="@color/black"
                 android:textStyle="bold"
+                android:editable="false"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
@@ -166,9 +178,26 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:text="@{viewModel.items.no_hp}"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:inputType="number"
+                android:lines="1"
+                android:maxLines="1"
+                app:layout_constraintEnd_toStartOf="@+id/btn_otp"
                 app:layout_constraintStart_toEndOf="@+id/edt_id"
                 app:layout_constraintTop_toBottomOf="@+id/textView6" />
+
+            <Button
+                android:id="@+id/btn_otp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="10dp"
+                android:text="Kirim kode OTP"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:backgroundTint="@color/main"
+                app:layout_constraintBottom_toBottomOf="@+id/edt_no_hp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/edt_no_hp" />
 
             <TextView
                 android:id="@+id/textView11"
@@ -178,9 +207,33 @@
                 android:layout_marginTop="16dp"
                 android:text="Kode OTP"
                 android:textColor="@color/main"
-                android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/edt_no_hp" />
+                app:layout_constraintTop_toBottomOf="@+id/btn_otp" />
+
+            <EditText
+                android:id="@+id/edt_otp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintEnd_toStartOf="@+id/btn_validasi_otp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView11" />
+
+            <Button
+                android:id="@+id/btn_validasi_otp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="10dp"
+                android:text="Verifikasi kode OTP"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:visibility="gone"
+                android:backgroundTint="@color/main"
+                app:layout_constraintBottom_toBottomOf="@+id/edt_otp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/edt_otp" />
 
             <TextView
                 android:id="@+id/textView7"
@@ -191,15 +244,15 @@
                 android:text="Status Kepegawaian"
                 android:textColor="@color/main"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView11" />
+                app:layout_constraintTop_toBottomOf="@+id/edt_otp" />
 
             <RadioGroup
                 android:id="@+id/rdGroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:orientation="horizontal"
                 app:layout_constraintTop_toBottomOf="@+id/textView7">
 
                 <RadioButton
@@ -234,6 +287,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
+                android:inputType="number"
                 android:text="@{viewModel.items.gaji}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -254,8 +308,8 @@
                 android:id="@+id/sp_bank"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:entries="@array/bank"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -265,12 +319,12 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
+                android:background="@color/black"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:background="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/sp_bank" />
+                app:layout_constraintTop_toBottomOf="@+id/sp_bank"/>
 
             <TextView
                 android:id="@+id/textView9"
@@ -323,6 +377,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/edt_sales_respon"
                 app:layout_constraintTop_toBottomOf="@id/edt_sales_respon" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
