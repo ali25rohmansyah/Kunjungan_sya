@@ -21,6 +21,7 @@ import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuth
@@ -124,8 +125,8 @@ class InputUserActivity : AppCompatActivity() {
 
         }
 
-        storage = FirebaseStorage.getInstance();
-        storageReference = storage.reference;
+        storage = FirebaseStorage.getInstance()
+        storageReference = storage.reference
         binding.ivAdd.setOnClickListener{
             if (checkAndRequestPermissions()){
                 val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -208,7 +209,9 @@ class InputUserActivity : AppCompatActivity() {
 
                 filePath = Uri.fromFile(File(photoPath!!))
                 val photo: Bitmap = BitmapFactory.decodeFile(photoPath)
-                binding.ivProfile.setImageBitmap(photo)
+                Glide.with(applicationContext)
+                    .load(photo)
+                    .into(binding.ivProfile)
 
                 val ref = storageReference.child("images/" + UUID.randomUUID().toString())
                 ref.putFile(filePath)
@@ -232,10 +235,10 @@ class InputUserActivity : AppCompatActivity() {
 
     private fun showTimeDialog() {
 
-        val c = Calendar.getInstance();
-        val mYear = c.get(Calendar.YEAR);
-        val mMonth = c.get(Calendar.MONTH);
-        val mDay = c.get(Calendar.DAY_OF_MONTH);
+        val c = Calendar.getInstance()
+        val mYear = c.get(Calendar.YEAR)
+        val mMonth = c.get(Calendar.MONTH)
+        val mDay = c.get(Calendar.DAY_OF_MONTH)
 
         val datePickerDialog = DatePickerDialog(
             this,
@@ -285,7 +288,7 @@ class InputUserActivity : AppCompatActivity() {
                 if (task.isSuccessful) {
                     Toast.makeText(this, "Verifikasi no telepon berhasil", Toast.LENGTH_SHORT).show()
                 } else {
-                    Toast.makeText(this,"Kode OTP salah",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this,"Kode OTP salah",Toast.LENGTH_SHORT).show()
                 }
             }
     }

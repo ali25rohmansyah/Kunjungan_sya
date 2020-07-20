@@ -75,8 +75,8 @@ class DetailUserActivity : AppCompatActivity() {
 
         }
 
-        storage = FirebaseStorage.getInstance();
-        storageReference = storage.reference;
+        storage = FirebaseStorage.getInstance()
+        storageReference = storage.reference
         binding.ivAdd.setOnClickListener{
             if (checkAndRequestPermissions()){
                 val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -289,10 +289,10 @@ class DetailUserActivity : AppCompatActivity() {
 
     private fun showTimeDialog() {
 
-        val c = Calendar.getInstance();
-        val mYear = c.get(Calendar.YEAR);
-        val mMonth = c.get(Calendar.MONTH);
-        val mDay = c.get(Calendar.DAY_OF_MONTH);
+        val c = Calendar.getInstance()
+        val mYear = c.get(Calendar.YEAR)
+        val mMonth = c.get(Calendar.MONTH)
+        val mDay = c.get(Calendar.DAY_OF_MONTH)
 
         val datePickerDialog = DatePickerDialog(
             this,
@@ -342,7 +342,7 @@ class DetailUserActivity : AppCompatActivity() {
                 if (task.isSuccessful) {
                     Toast.makeText(this, "Verifikasi no telepon berhasil", Toast.LENGTH_SHORT).show()
                 } else {
-                    Toast.makeText(this,"Kode OTP salah", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this,"Kode OTP salah", Toast.LENGTH_SHORT).show()
                 }
             }
     }

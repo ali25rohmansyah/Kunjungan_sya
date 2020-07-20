@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.View
 import android.widget.SearchView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -58,7 +57,7 @@ class HomeActivity : AppCompatActivity() {
                 binding.progressCircular.visibility = View.GONE
             }else if(it == "4"){
                 binding.label.visibility = View.VISIBLE
-                binding.label.text = "Server error silahkan refresh beberapa saat lagi"
+                binding.label.text = "Server error silahkan restart beberapa saat lagi"
                 binding.progressCircular.visibility = View.GONE
             }
         })
